@@ -64,6 +64,8 @@
                     convertBtn.classList.add('hidden');
                     progressBar.classList.add('hidden');
                     progressText.textContent = '转换完成！';
+                    downloadBtn.classList.remove('hidden');
+                    downloadBtn.innerHTML = '请稍后...';
                 }
             });
             // Load FFmpeg.js
@@ -157,7 +159,7 @@
                 let suffix = fileName.substring(index);
                 let newFileName = fileName.replace(suffix, ".mp4");
                 downloadBtn.download = newFileName;
-                downloadBtn.classList.remove('hidden');
+                downloadBtn.innerHTML = '立即下载 MP4';
             });
         });
     </script>
