@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin"> 
+    <title>MTS 转 MP4</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest/dist/ffmpeg.min.js"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">MTS 转 MP4</h1>
+        <form id="uploadForm" class="space-y-4">
+            <input type="file" accept=".mts" id="fileInput" class="w-full border border-gray-300 rounded-md p-2" required>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">转换为 MP4</button>
+        </form>
+        <div id="message" class="mt-4 text-center text-red-500"></div>
+        <a id="downloadLink" class="hidden mt-4 text-blue-500" download>下载 MP4 文件</a>
+    </div>
+
+    <script>
+        const { createFFmpeg, fetchFile } = FFmpeg;
+
+        const ffmpeg = createFFmpeg({ log: true });
+
+        window.onload = async () => {
+            await ffmpeg.load();
+
+            document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const fileInput = document.getElementById('fileInput');
+                const messageDiv = document.getElementById('message');
+                const downloadLink = document.getElementById('downloadLink');
+
+                if (fileInput.files.length === 0) {
+                    messageDiv.textContent = '请上传一个 MTS 文件。';
+                    return;
+                }
+
+                messageDiv.textContent = '文件上传成功！正在转换...';
+
+                ffmpeg.FS('writeFile', 'input.mts', await fetchFile(fileInput.files[0]));
+                await ffmpeg.run('-i', 'input.mts', '-c:v', 'libx264', '-c:a', 'copy', '-f', 'mp4', 'output.mp4');
+
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                const blob = new Blob([data.buffer], { type: 'video/mp4' });
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.classList.remove('hidden');
+                downloadLink.textContent = '下载 MP4 文件';
+                messageDiv.textContent = '转换完成！';
+            });
+        };
+    </script>
+</body>
+</html>
