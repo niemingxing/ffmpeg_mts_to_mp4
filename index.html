@@ -82,8 +82,8 @@
             let currentFile = null;
 
             //dropZone.addEventListener('click', () => fileInput.click());
-            // fileInput.addEventListener('change', handleFileSelect);
-            fileInput.addEventListener('input', handleFileSelect);
+            fileInput.addEventListener('change', handleFileSelect);
+            // fileInput.addEventListener('input', handleFileSelect);
 
             dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -101,7 +101,6 @@
             });
 
             function handleFileSelect(e) {
-                alert(1);
                 const files = e.target.files;
                 if (files.length > 0) handleFile(files[0]);
             }
