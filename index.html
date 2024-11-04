@@ -82,7 +82,9 @@
             let currentFile = null;
 
             //dropZone.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', handleFileSelect);
+            // fileInput.addEventListener('change', handleFileSelect);
+            fileInput.addEventListener('input', handleFileSelect);
+
             dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropZone.classList.add('border-blue-500');
